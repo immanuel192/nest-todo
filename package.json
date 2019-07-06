@@ -15,8 +15,7 @@
     "reflect-metadata": "0.1.13",
     "response-time": "2.3.2",
     "rxjs": "6.3.3",
-    "tslib": "1.9.3",
-    "winston": "3.2.1"
+    "tslib": "1.9.3"
   },
   "devDependencies": {
     "@commitlint/cli": "8.0.0",

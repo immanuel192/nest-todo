@@ -1,4 +1,5 @@
 import { NestMiddleware, Injectable, Inject, HttpServer } from '@nestjs/common';
+import { HttpAdapterHost } from '@nestjs/core';
 import { ILoggerInstance } from '../commons';
 import { PROVIDERS } from '../commons/const';
 
@@ -7,12 +8,14 @@ const FORCE_TIMEOUT = 20000; // 20s
 @Injectable()
 export class MwGracefulShutdown implements NestMiddleware {
   private shuttingDown: boolean = false;
+  private httpServer: HttpServer;
 
   constructor(
     @Inject(PROVIDERS.ROOT_LOGGER)
     private readonly logger: ILoggerInstance,
-    private httpServer: HttpServer
+    httpAdapterHost: HttpAdapterHost
   ) {
+    this.httpServer = httpAdapterHost.httpAdapter.getHttpServer();
     process.on('SIGTERM', this.gracefulExit.bind(this));
   }
 

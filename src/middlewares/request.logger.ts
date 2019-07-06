@@ -14,7 +14,7 @@ export class MwRequestLogger implements NestMiddleware {
   ) {
     this.mw = morgan('combined', {
       stream: {
-        write: (message: string) => this.logger.info(message)
+        write: (message: string) => this.logger.log(message)
       }
     });
 

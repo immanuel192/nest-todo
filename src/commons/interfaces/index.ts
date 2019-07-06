@@ -10,10 +10,9 @@ export abstract class IConfiguration {
 }
 
 export type ILoggerInstance = {
-  error?: (obj: any) => ILoggerInstance;
-  warn?: (obj: any) => ILoggerInstance;
-  notice?: (obj: any) => ILoggerInstance;
-  info?: (obj: any) => ILoggerInstance;
-  debug?: (obj: any) => ILoggerInstance;
-  verbose?: (obj: any) => ILoggerInstance;
+  error(message: any, trace?: string, context?: string): void;
+  log(message: any, context?: string): void;
+  warn(message: any, context?: string): void;
+  debug(message: any, context?: string): void;
+  verbose(message: any, context?: string): void;
 };
