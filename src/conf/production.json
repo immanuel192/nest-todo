@@ -1,1 +1,6 @@
-{}
+{
+  "database": {
+    "type": "fs",
+    "fileName": "./db.json"
+  }
+}
