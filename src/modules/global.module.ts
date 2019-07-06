@@ -1,7 +1,7 @@
 import { Global, Module, DynamicModule } from '@nestjs/common';
 import HealthController from '../controllers/health.controller';
 import {
-  providerLogger, providerConfig
+  providerLogger, providerConfig, providerDatabase
 } from '../providers';
 
 @Global()
@@ -15,11 +15,13 @@ export class GlobalModule {
       ],
       providers: [
         providerConfig,
-        providerLogger
+        providerLogger,
+        providerDatabase
       ],
       exports: [
         providerConfig,
-        providerLogger
+        providerLogger,
+        providerDatabase
       ]
     };
   }
