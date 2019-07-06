@@ -15,7 +15,7 @@ import { providerErrorFilter } from '../providers';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(MwGracefulShutdown);
-    consumer.apply(MwRequestLogger);
+    consumer.apply(MwGracefulShutdown).forRoutes('/');
+    consumer.apply(MwRequestLogger).forRoutes('/');
   }
 }

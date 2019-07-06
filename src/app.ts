@@ -17,9 +17,7 @@ function handleErrors() {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    // logger: new LoggerService()
-  });
+  const app = await NestFactory.create(AppModule);
   app.enableCors();
   app.use(helmet());
   app.use(responseTime({

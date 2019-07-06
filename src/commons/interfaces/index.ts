@@ -1,4 +1,3 @@
-export * from './ITransformation';
 export * from './ITMap';
 
 /**
@@ -7,26 +6,13 @@ export * from './ITMap';
  * @interface IConfiguration
  */
 export abstract class IConfiguration {
-  abstract get<T = any>(name?: string, defaultValue?: T): T | null;
+  abstract get<T = any>(name?: string): T | null;
 }
 
 export type ILoggerInstance = {
-  error?: (obj: any) => ILoggerInstance;
-  warn?: (obj: any) => ILoggerInstance;
-  notice?: (obj: any) => ILoggerInstance;
-  info?: (obj: any) => ILoggerInstance;
-  debug?: (obj: any) => ILoggerInstance;
-  verbose?: (obj: any) => ILoggerInstance;
+  error(message: any, trace?: string, context?: string): void;
+  log(message: any, context?: string): void;
+  warn(message: any, context?: string): void;
+  debug(message: any, context?: string): void;
+  verbose(message: any, context?: string): void;
 };
-
-/**
- * Create new instance of logger with your current filename based
- *
- * @interface ILoggerOfFile
- */
-export interface ILoggerOfFile {
-  /**
-   * Create new instance of logger with your current filename based
-   */
-  (filename: string): ILoggerInstance;
-}

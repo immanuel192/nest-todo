@@ -1,12 +1,10 @@
-import { IConfiguration } from '../commons/interfaces';
 import { FactoryProvider } from '@nestjs/common/interfaces';
+import { IConfiguration } from '../commons/interfaces';
 
 function getConfigurationInstance(): IConfiguration {
-  return {
-    get() {
-      return null;
-    }
-  };
+  process.env['NODE_CONFIG_DIR'] = __dirname + '/../conf';
+  const config = require('config');
+  return config;
 }
 
 export const providerConfig: FactoryProvider = {
