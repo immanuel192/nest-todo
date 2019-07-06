@@ -1,13 +1,14 @@
 import { FactoryProvider } from '@nestjs/common/interfaces';
-import { IConfiguration } from '../commons/interfaces';
+import { IConfiguration, ILoggerInstance } from '../commons/interfaces';
 import * as lokijs from 'lokijs';
 import { PROVIDERS } from '../commons';
 
 export const providerDatabase: FactoryProvider = {
   provide: PROVIDERS.DB,
-  inject: [IConfiguration],
+  inject: [IConfiguration, PROVIDERS.ROOT_LOGGER],
   useFactory: async (
-    configProvider: IConfiguration
+    configProvider: IConfiguration,
+    logger: ILoggerInstance
   ) => {
     const dbConfig = configProvider.get('database') as { type: string, fileName?: string };
 
@@ -21,7 +22,10 @@ export const providerDatabase: FactoryProvider = {
     })
       .then(async (db) => {
         if (!db.getCollection('users')) {
-          db.addCollection('users');
+          const userCollection = db.addCollection('users');
+          // seed sample user
+          logger.debug('Seeding sample user zendesk123');
+          await userCollection.insert({ id: 1, username: 'zendesk123', password: Buffer.from('321ksednez').toString('base64') });
         }
         if (!db.getCollection('posts')) {
           db.addCollection('posts', { indices: ['userId'] });
