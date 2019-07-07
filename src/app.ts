@@ -31,6 +31,7 @@ async function bootstrap() {
   const options = new DocumentBuilder()
     .setTitle('nest-todo')
     .setDescription('nest-todo api')
+    .addBearerAuth('Authorization', 'header', 'basic')
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);

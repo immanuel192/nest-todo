@@ -11,7 +11,6 @@ export const providerDatabase: FactoryProvider = {
     logger: ILoggerInstance
   ) => {
     const dbConfig = configProvider.get('database') as { type: string, fileName?: string };
-
     return await Promise.resolve().then(() => {
       const db = new lokijs(dbConfig.fileName || 'database.json', {
         persistenceMethod: dbConfig.type as any,
@@ -30,8 +29,8 @@ export const providerDatabase: FactoryProvider = {
           logger.debug('Seeding sample user zendesk123');
           await userCollection.insert({ id: 1, username: 'zendesk123', createdOn: new Date() });
         }
-        if (!db.getCollection('posts')) {
-          db.addCollection('posts', { indices: ['userId'] }).on('insert', (input: any) => {
+        if (!db.getCollection('todos')) {
+          db.addCollection('todos', { indices: ['userId'] }).on('insert', (input: any) => {
             input.id = input.$loki;
           });
         }

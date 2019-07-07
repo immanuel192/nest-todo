@@ -3,7 +3,7 @@ import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as _ from 'lodash';
 import { AppModule } from '../src/modules/app.module';
-import { randomString, NoopLogger, expectDateISO8601Format } from '../src/commons/test-helper';
+import { randomString, NoopLogger, expectDateISO8601Format, DEFAULT_USERNAME, DEFAULT_PASSWORD } from '../src/commons/test-helper';
 import { PROVIDERS } from '../src/commons';
 
 /**
@@ -116,6 +116,56 @@ describe('/src/app.ts', () => {
               uri: '/users',
               method: 'POST'
             });
+          });
+      });
+    });
+  });
+
+  describe('Todo', () => {
+    describe('Add todo', () => {
+      it('when adding todo without Authorization then return HTTP 401', () => {
+        return request(app.getHttpServer())
+          .post('/todos')
+          .auth(randomString(), randomString(), { type: 'basic' })
+          .send({ title: 'my todo' })
+          .set('accept', 'json')
+          .expect(401);
+      });
+
+      it('when adding todo with out title then return HTTP 400', () => {
+        return request(app.getHttpServer())
+          .post('/todos')
+          .auth(DEFAULT_USERNAME, DEFAULT_PASSWORD, { type: 'basic' })
+          .send({ title2: 'my todo' })
+          .set('accept', 'json')
+          .expect(400);
+      });
+
+      it('when adding todo without title then return HTTP 400', () => {
+        return request(app.getHttpServer())
+          .post('/todos')
+          .auth(DEFAULT_USERNAME, DEFAULT_PASSWORD, { type: 'basic' })
+          .send({ title: '' })
+          .set('accept', 'json')
+          .expect(400);
+      });
+
+      it('when adding todo then receive HTTP 201 with todo info', () => {
+        const myTitle = randomString();
+        return request(app.getHttpServer())
+          .post('/todos')
+          .auth(DEFAULT_USERNAME, DEFAULT_PASSWORD, { type: 'basic' })
+          .send({ title: myTitle })
+          .set('accept', 'json')
+          .expect(201)
+          .then((ret) => {
+            expect(ret.body.data).toMatchObject({
+              id: expect.any(Number),
+              title: myTitle,
+              status: 'Active',
+              createdOn: expectDateISO8601Format
+            });
+            expect(ret.body.data).not.toHaveProperty('userId');
           });
       });
     });

@@ -1,4 +1,7 @@
 export { when } from 'jest-when';
+export const DEFAULT_USERNAME = 'zendesk123';
+export const DEFAULT_PASSWORD = '321ksednez';
+
 const ISO_8601_FULL = /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d+)?(([+-]\d\d:\d\d)|Z)?$/i;
 export const expectDateISO8601Format = expect.stringMatching(ISO_8601_FULL);
 
