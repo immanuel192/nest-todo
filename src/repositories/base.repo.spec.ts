@@ -46,7 +46,7 @@ describe('/src/repositories/base.repo.ts', () => {
   });
 
   describe('findOne', () => {
-    it('should findOne with inp query', async () => {
+    it('should findOne with inp query and omit meta fields', async () => {
       const query = { a: 1, b: 2 };
       const expectValue = { name: 'trung' };
 
@@ -54,6 +54,8 @@ describe('/src/repositories/base.repo.ts', () => {
 
       const res = await instance.findOne(query);
       expect(res).toMatchObject(expectValue);
+      expect(res).not.toHaveProperty('meta');
+      expect(res).not.toHaveProperty('$loki');
     });
   });
 });

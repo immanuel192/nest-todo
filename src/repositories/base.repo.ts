@@ -20,6 +20,7 @@ export class BaseRepository<TModel extends Object = any> {
   }
 
   async findOne(query: any): Promise<TModel> {
-    return await this.collection.findOne(query);
+    const ret = await this.collection.findOne(query);
+    return omit(ret, ['meta', '$loki']) as any;
   }
 }
