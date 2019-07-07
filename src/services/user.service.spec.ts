@@ -61,4 +61,16 @@ describe('/src/services/user.service.ts', () => {
         });
     });
   });
+
+  describe('findByUsername', () => {
+    it('should find user by username', async () => {
+      const expectUsername = 'test-user';
+      const expectReceive = { a: 1, b: 2 };
+
+      when(repoUser.findOne).calledWith({ username: expectUsername }).mockResolvedValue(expectReceive);
+
+      const ret = await instance.findByUsername(expectUsername);
+      expect(ret).toMatchObject(expectReceive);
+    });
+  });
 });

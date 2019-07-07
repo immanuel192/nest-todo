@@ -28,4 +28,8 @@ export class UserService implements IUserService {
       username: user.username.toLowerCase()
     });
   }
+
+  findByUsername(username: string): Promise<UserDto> {
+    return this.repoUser.findOne({ username });
+  }
 }
