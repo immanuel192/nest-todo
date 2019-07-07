@@ -354,5 +354,87 @@ describe('/src/app.ts', () => {
           });
       });
     });
+
+    describe('List Todo', () => {
+      const firstUserTodos: TodoDto[] = [];
+      const secondUserTodos: TodoDto[] = [];
+      const firstUser = { id: 0, username: randomString(), password: '' };
+      const secondUser = { id: 0, username: randomString(), password: '' };
+
+      beforeAll(async () => {
+        // seed data
+        firstUser.password = firstUser.username.split('').reverse().join('');
+        secondUser.password = secondUser.username.split('').reverse().join('');
+
+        const userService = app.get(IUserService);
+        let user = await userService.createUser({ username: firstUser.username });
+        firstUser.id = user.id;
+        user = await userService.createUser({ username: secondUser.username });
+        secondUser.id = user.id;
+
+        //
+        for (let i = 0; i < 5; i++) {
+          firstUserTodos.push(await todoService.create({ title: randomString() }, firstUser.id));
+          secondUserTodos.push(await todoService.create({ title: randomString() }, secondUser.id));
+        }
+        // Complete one
+        await todoService.complete(firstUserTodos[firstUserTodos.length - 1].id, firstUser.id);
+      });
+
+      it('when list todo without Authorization then return HTTP 401', () => {
+        return request(app.getHttpServer())
+          .get('/todos')
+          .auth(randomString(), randomString(), { type: 'basic' })
+          .set('accept', 'json')
+          .expect(401);
+      });
+
+      it('when list todo then return list of todo of authenticated user and HTTP 200', () => {
+        return request(app.getHttpServer())
+          .get('/todos')
+          .auth(firstUser.username, firstUser.password, { type: 'basic' })
+          .set('accept', 'json')
+          .expect(200)
+          .then(async (ret) => {
+            const data = ret.body.data.map((t: any) => t.id);
+            const firstUserTodoIds = firstUserTodos.map(t => t.id);
+            const secondUserTodoIds = secondUserTodos.map(t => t.id);
+            const diff = _.difference(data, firstUserTodoIds);
+            const diff2 = _.difference(secondUserTodoIds, data);
+            expect(diff.length).toEqual(0);
+            expect(diff2.length).toEqual(secondUserTodoIds.length);
+            expect(data.length).toEqual(firstUserTodoIds.length);
+          });
+      });
+
+      it('when list Completed todos then list of todo of authenticated user and HTTP 200', () => {
+        return request(app.getHttpServer())
+          .get('/todos?status=' + ETodoStatus.Completed)
+          .auth(firstUser.username, firstUser.password, { type: 'basic' })
+          .set('accept', 'json')
+          .expect(200)
+          .then(async (ret) => {
+            expect(ret.body.data).toHaveLength(1);
+            expect(ret.body.data[0]).toMatchObject({
+              id: firstUserTodos[firstUserTodos.length - 1].id,
+              userId: firstUserTodos[firstUserTodos.length - 1].userId
+            });
+          });
+      });
+
+      it('when list Active todos then list of todo of authenticated user and HTTP 200', () => {
+        return request(app.getHttpServer())
+          .get('/todos?status=' + ETodoStatus.Active)
+          .auth(firstUser.username, firstUser.password, { type: 'basic' })
+          .set('accept', 'json')
+          .expect(200)
+          .then(async (ret) => {
+            expect(ret.body.data).toHaveLength(firstUserTodos.length - 1);
+            const data = ret.body.data.map((t: any) => t.id);
+            const firstUserTodoIds = firstUserTodos.map(t => t.id).slice(0, firstUserTodos.length - 1).sort();
+            expect(data.sort()).toEqual(firstUserTodoIds);
+          });
+      });
+    });
   });
 });

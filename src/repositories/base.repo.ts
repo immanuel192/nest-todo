@@ -24,6 +24,11 @@ export class BaseRepository<TModel extends Object = any> {
     return ret ? omit(ret, ['meta', '$loki']) as any : undefined;
   }
 
+  async find(query: any): Promise<TModel[]> {
+    const ret = await this.collection.find(query);
+    return ret.map(r => omit(r, ['meta', '$loki']) as any);
+  }
+
   async findAndUpdate(query: PartialModel<TModel, any>, update: PartialModel<TModel, any>): Promise<void> {
     this.collection.findAndUpdate(query as any, obj => merge(obj, update));
   }

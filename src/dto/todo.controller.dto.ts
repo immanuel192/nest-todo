@@ -1,5 +1,5 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import { IsString, IsDate, IsInt, MinLength, IsNumberString } from 'class-validator';
+import { IsString, IsDate, IsInt, MinLength, IsNumberString, IsOptional } from 'class-validator';
 
 export class CreateTodoRequestDto {
   @ApiModelProperty({
@@ -54,4 +54,24 @@ export class CreateTodoResponseDto {
 export class RequestTodoByIdParamDto {
   @IsNumberString()
   id: number;
+}
+
+export class GetTodoRequestQueryDto {
+  @ApiModelProperty({
+    required: false,
+    enum: ['Active', 'Completed'],
+    default: '',
+    description: 'Todo status. Leave empty to search all'
+  })
+  @IsString()
+  @IsOptional()
+  status: string;
+}
+
+export class ListTodoResponseDto {
+  @ApiModelProperty({
+    required: true,
+    type: [TodoResponseDto]
+  })
+  data: TodoResponseDto[];
 }
