@@ -27,4 +27,8 @@ export class BaseRepository<TModel extends Object = any> {
   async findAndUpdate(query: PartialModel<TModel, any>, update: PartialModel<TModel, any>): Promise<void> {
     this.collection.findAndUpdate(query as any, obj => merge(obj, update));
   }
+
+  async removeByQuery(query: PartialModel<TModel, any>): Promise<void> {
+    await this.collection.removeWhere(query as any);
+  }
 }

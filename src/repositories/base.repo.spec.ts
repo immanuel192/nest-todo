@@ -5,7 +5,8 @@ const expectCollectionName = 'myCollection';
 const mockCollection = {
   insertOne: jest.fn(),
   findOne: jest.fn(),
-  findAndUpdate: jest.fn()
+  findAndUpdate: jest.fn(),
+  removeWhere: jest.fn()
 };
 
 describe('/src/repositories/base.repo.ts', () => {
@@ -71,6 +72,17 @@ describe('/src/repositories/base.repo.ts', () => {
       const callArgs = mockCollection.findAndUpdate.mock.calls[0];
       expect(callArgs[0]).toMatchObject(query);
       expect(callArgs[1](query)).toMatchObject({ ...query, ...update });
+    });
+  });
+
+  describe('removeByQuery', () => {
+    it('should run correctly', async () => {
+      const query = { a: 1, b: 2 };
+      await instance.removeByQuery(query);
+
+      //
+      expect(mockCollection.removeWhere).toHaveBeenCalledTimes(1);
+      expect(mockCollection.removeWhere).toBeCalledWith(query);
     });
   });
 });

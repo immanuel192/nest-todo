@@ -51,7 +51,7 @@ export class CreateTodoResponseDto {
   data: TodoResponseDto;
 }
 
-export class CompleteTodoRequestParamDto {
+export class RequestTodoByIdParamDto {
   @IsNumberString()
   id: number;
 }
