@@ -1,3 +1,25 @@
+# [1.1.0](https://github.com/immanuel192/nest-todo/compare/v1.0.0...v1.1.0) (2019-07-07)
+
+
+### Bug Fixes
+
+* correct CI deploy script ([e2e497c](https://github.com/immanuel192/nest-todo/commit/e2e497c))
+* omit meta and $loki when findOne in baseRepo ([b123831](https://github.com/immanuel192/nest-todo/commit/b123831))
+
+
+### Code Refactoring
+
+* add status as indicies of todo ([1cf1824](https://github.com/immanuel192/nest-todo/commit/1cf1824))
+* update user controller swagger ([c82a0e3](https://github.com/immanuel192/nest-todo/commit/c82a0e3))
+
+
+### Features
+
+* add complete todo endpoint ([391a3c0](https://github.com/immanuel192/nest-todo/commit/391a3c0))
+* add create todo endpoint ([2b0ec2a](https://github.com/immanuel192/nest-todo/commit/2b0ec2a))
+* add todos repository ([6bb5b64](https://github.com/immanuel192/nest-todo/commit/6bb5b64))
+* implement the flow of endpoint add todo ([144202b](https://github.com/immanuel192/nest-todo/commit/144202b))
+
 # 1.0.0 (2019-07-07)
 
 
