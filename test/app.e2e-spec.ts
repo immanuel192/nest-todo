@@ -5,6 +5,10 @@ import * as _ from 'lodash';
 import { AppModule } from '../src/modules/app.module';
 import { randomString, NoopLogger, expectDateISO8601Format, DEFAULT_USERNAME, DEFAULT_PASSWORD } from '../src/commons/test-helper';
 import { PROVIDERS } from '../src/commons';
+import { IUserService } from '../src/services';
+import { ITodoService } from '../src/services/todo.service.interface';
+import { TodoDto, ETodoStatus } from '../src/dto';
+import { ITodoRepository } from '../src/repositories';
 
 /**
  * Integration test for Jobs
@@ -76,7 +80,7 @@ describe('/src/app.ts', () => {
           .send({})
           .set('accept', 'json')
           .expect(400)
-          .then((ret) => expect(ret.text).toMatch(/username must be a string/));
+          .then(ret => expect(ret.text).toMatch(/username must be a string/));
       });
 
       it('when creating user then got HTTP 201 with user name in lowercase', () => {
@@ -122,6 +126,26 @@ describe('/src/app.ts', () => {
   });
 
   describe('Todo', () => {
+    let todoService: ITodoService;
+    let repoTodo: ITodoRepository;
+
+    const firstUser = { id: 0, username: randomString(), password: '' };
+    const secondUser = { id: 0, username: randomString(), password: '' };
+
+    beforeAll(async () => {
+      todoService = app.get(ITodoService);
+      repoTodo = app.get(ITodoRepository);
+
+      firstUser.password = firstUser.username.split('').reverse().join('');
+      secondUser.password = secondUser.username.split('').reverse().join('');
+
+      const userService = app.get(IUserService);
+      let user = await userService.createUser({ username: firstUser.username });
+      firstUser.id = user.id;
+      user = await userService.createUser({ username: secondUser.username });
+      secondUser.id = user.id;
+    });
+
     describe('Add todo', () => {
       it('when adding todo without Authorization then return HTTP 401', () => {
         return request(app.getHttpServer())
@@ -166,6 +190,94 @@ describe('/src/app.ts', () => {
               createdOn: expectDateISO8601Format
             });
             expect(ret.body.data).not.toHaveProperty('userId');
+          });
+      });
+    });
+
+    describe('Complete Todo', () => {
+      let firstTodo: TodoDto;
+      let secondTodo: TodoDto;
+
+      beforeAll(async () => {
+        firstTodo = await todoService.create({ title: randomString() }, firstUser.id);
+        secondTodo = await todoService.create({ title: randomString() }, secondUser.id);
+      });
+
+      it('when complete todo without Authorization then return HTTP 401', () => {
+        return request(app.getHttpServer())
+          .patch('/todos/1/complete')
+          .auth(randomString(), randomString(), { type: 'basic' })
+          .set('accept', 'json')
+          .expect(401);
+      });
+
+      it('when complete todo with invalid id data type then return HTTP 400', () => {
+        return request(app.getHttpServer())
+          .patch('/todos/abc/complete')
+          .auth(firstUser.username, firstUser.password, { type: 'basic' })
+          .set('accept', 'json')
+          .expect(400);
+      });
+
+      it('when complete todo with id less than 1 then return HTTP 400', () => {
+        return request(app.getHttpServer())
+          .patch('/todos/0/complete')
+          .auth(firstUser.username, firstUser.password, { type: 'basic' })
+          .set('accept', 'json')
+          .expect(400)
+          .then((ret) => {
+            expect(ret.body).toMatchObject({ message: 'Todo id is invalid' });
+          });
+      });
+
+      it('when complete todo with not exist id then return HTTP 404', () => {
+        return request(app.getHttpServer())
+          .patch(`/todos/${(firstTodo.id * 10)}/complete`)
+          .auth(firstUser.username, firstUser.password, { type: 'basic' })
+          .set('accept', 'json')
+          .expect(404)
+          .then((ret) => {
+            expect(ret.body).toMatchObject({
+              message: `Todo ${(firstTodo.id * 10)} is not found`
+            });
+          });
+      });
+
+      it('when complete existing todo which belong to other user then return HTTP 403', () => {
+        return request(app.getHttpServer())
+          .patch(`/todos/${secondTodo.id}/complete`)
+          .auth(firstUser.username, firstUser.password, { type: 'basic' })
+          .set('accept', 'json')
+          .expect(403)
+          .then((ret) => {
+            expect(ret.body).toMatchObject({
+              message: `Todo ${secondTodo.id} is not belong to you`
+            });
+          });
+      });
+
+      it('when complete todo then return HTTP 200', () => {
+        return request(app.getHttpServer())
+          .patch(`/todos/${firstTodo.id}/complete`)
+          .auth(firstUser.username, firstUser.password, { type: 'basic' })
+          .set('accept', 'json')
+          .expect(200)
+          .then(async () => {
+            const todo = await repoTodo.findOne({ id: firstTodo.id });
+            expect(todo.status).toEqual(ETodoStatus.Completed);
+          });
+      });
+
+      it('when complete todo which has been completed then return HTTP 400', () => {
+        return request(app.getHttpServer())
+          .patch(`/todos/${firstTodo.id}/complete`)
+          .auth(firstUser.username, firstUser.password, { type: 'basic' })
+          .set('accept', 'json')
+          .expect(400)
+          .then((ret) => {
+            expect(ret.body).toMatchObject({
+              message: `Todo ${firstTodo.id} has been completed`
+            });
           });
       });
     });

@@ -4,7 +4,8 @@ import { when } from '../commons/test-helper';
 const expectCollectionName = 'myCollection';
 const mockCollection = {
   insertOne: jest.fn(),
-  findOne: jest.fn()
+  findOne: jest.fn(),
+  findAndUpdate: jest.fn()
 };
 
 describe('/src/repositories/base.repo.ts', () => {
@@ -56,6 +57,20 @@ describe('/src/repositories/base.repo.ts', () => {
       expect(res).toMatchObject(expectValue);
       expect(res).not.toHaveProperty('meta');
       expect(res).not.toHaveProperty('$loki');
+    });
+  });
+
+  describe('findAndUpdate', () => {
+    it('should run correctly', async () => {
+      const query = { a: 1, b: 2 };
+      const update = { b: 3 };
+      await instance.findAndUpdate(query, update);
+
+      //
+      expect(mockCollection.findAndUpdate).toHaveBeenCalledTimes(1);
+      const callArgs = mockCollection.findAndUpdate.mock.calls[0];
+      expect(callArgs[0]).toMatchObject(query);
+      expect(callArgs[1](query)).toMatchObject({ ...query, ...update });
     });
   });
 });

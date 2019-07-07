@@ -46,6 +46,29 @@
       "runtimeArgs": [
         "--nolazy"
       ]
+    },
+    {
+      "name": "Debug integration test",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceRoot}/node_modules/.bin/jest",
+      "stopOnEntry": false,
+      "env": {
+        "NODE_ENV": "test",
+        "PORT": "9000"
+      },
+      "args": [
+        "--config",
+        "./jest-cover.json",
+        "${relativeFile}",
+        "--forceExit"
+      ],
+      "cwd": "${workspaceRoot}",
+      "preLaunchTask": null,
+      "runtimeExecutable": null,
+      "runtimeArgs": [
+        "--nolazy"
+      ]
     }
   ]
 }
