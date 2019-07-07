@@ -6,10 +6,18 @@ export interface UserDto {
   createdOn: Date;
 }
 
+export enum ETodoStatus {
+  Active = 'Active',
+  Completed = 'Completed'
+}
+
 export interface TodoDto {
   id?: number;
   title: string;
   userId: number;
-  done?: boolean;
+  /**
+   * =0: done; =1: Active;
+   */
+  status: ETodoStatus;
   createdOn: Date;
 }

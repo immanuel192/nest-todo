@@ -13,7 +13,7 @@ export class CreateUserRequestDto {
   readonly username: string;
 }
 
-export class CreateUserResponseDto {
+class UserResponseDto {
   @ApiModelProperty({
     required: true,
     example: 1
@@ -34,4 +34,60 @@ export class CreateUserResponseDto {
   })
   @IsDate()
   createdOn: string;
+}
+
+export class CreateUserResponseDto {
+  @ApiModelProperty({
+    required: true,
+    type: UserResponseDto
+  })
+  data: UserResponseDto;
+}
+
+export class CreateTodoRequestDto {
+  @ApiModelProperty({
+    required: true,
+    description: 'Todo title'
+  })
+  @IsString()
+  readonly title: string;
+}
+
+class TodoResponseDto {
+  @ApiModelProperty({
+    required: true,
+    example: 1
+  })
+  @IsInt()
+  id: number;
+
+  @ApiModelProperty({
+    required: true,
+    example: 'Go supermarket'
+  })
+  @IsString()
+  title: string;
+
+  @ApiModelProperty({
+    required: true,
+    description: 'Todo status',
+    example: 'Active'
+  })
+  @IsString()
+  status: string;
+
+  @ApiModelProperty({
+    example: '2019-07-07T09:18:27.263Z',
+    required: true
+  })
+  @IsDate()
+  createdOn: string;
+}
+
+export class CreateTodoResponseDto {
+  @ApiModelProperty({
+    required: true,
+    type: TodoResponseDto
+  })
+  data: TodoResponseDto;
 }

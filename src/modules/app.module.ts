@@ -5,10 +5,12 @@ import { IOC_KEY } from '../commons';
 import { MwGracefulShutdown, MwRequestLogger } from '../middlewares';
 import { providerErrorFilter, providerGlobalValidation } from '../providers';
 import UserController from '../controllers/user.controller';
+import TodoController from '../controllers/todo.controller';
 import { UserService } from '../services/user.service';
 import { IUserRepository, ITodoRepository } from '../repositories';
 import { AuthService } from '../services/auth.service';
 import { HttpStrategy } from '../commons/http.strategy';
+import { TodoService } from '../services/todo.service';
 
 @Module({
   imports: [
@@ -16,7 +18,8 @@ import { HttpStrategy } from '../commons/http.strategy';
     PassportModule.register({ defaultStrategy: 'basic', property: 'profile' }),
   ],
   controllers: [
-    UserController
+    UserController,
+    TodoController
   ],
   providers: [
     providerErrorFilter,
@@ -29,7 +32,8 @@ import { HttpStrategy } from '../commons/http.strategy';
     ITodoRepository[IOC_KEY],
 
     //
-    UserService[IOC_KEY]
+    UserService[IOC_KEY],
+    TodoService[IOC_KEY]
   ]
 })
 export class AppModule implements NestModule {
