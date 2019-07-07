@@ -13,6 +13,7 @@
   "coveragePathIgnorePatterns": [
     "/node_modules/",
     "app.ts",
+    "test-helper.ts",
     "middlewares"
   ],
   "collectCoverageFrom": [
