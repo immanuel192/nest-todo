@@ -25,7 +25,8 @@ export class UserService implements IUserService {
     }
     return this.repoUser.insertOne({
       ...user,
-      username: user.username.toLowerCase()
+      username: user.username.toLowerCase(),
+      createdOn: new Date()
     });
   }
 

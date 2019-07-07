@@ -92,7 +92,8 @@ describe('/src/app.ts', () => {
             expect(ret.body).toMatchObject({
               data: {
                 id: expect.any(Number),
-                username: 'trung'
+                username: 'trung',
+                createdOn: expectDateISO8601Format
               }
             });
           });
