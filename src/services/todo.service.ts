@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { ClassProvider } from '@nestjs/common/interfaces';
 import { ITodoRepository } from '../repositories';
 import { IOC_KEY } from '../commons';
@@ -25,5 +25,19 @@ export class TodoService implements ITodoService {
       status: ETodoStatus.Active,
       createdOn: new Date()
     });
+  }
+
+  async complete(id: number, userId: number): Promise<void> {
+    const todo = await this.repoTodo.findOne({ id });
+    if (!todo) {
+      throw new NotFoundException(`Todo ${id} is not found`);
+    }
+    if (todo.userId !== userId) {
+      throw new ForbiddenException(`Todo ${id} is not belong to you`);
+    }
+    if (todo.status === ETodoStatus.Completed) {
+      throw new BadRequestException(`Todo ${id} has been completed`);
+    }
+    await this.repoTodo.findAndUpdate({ id }, { status: ETodoStatus.Completed });
   }
 }

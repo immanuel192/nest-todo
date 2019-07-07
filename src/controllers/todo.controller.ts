@@ -1,9 +1,9 @@
-import { Controller, Post, Body, UseGuards, UseInterceptors, Request } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, UseInterceptors, Request, Param, Patch, BadRequestException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiUseTags, ApiUnauthorizedResponse, ApiCreatedResponse, ApiBadRequestResponse, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiUseTags, ApiUnauthorizedResponse, ApiCreatedResponse, ApiBadRequestResponse, ApiOperation, ApiBearerAuth, ApiImplicitParam, ApiNotFoundResponse, ApiForbiddenResponse, ApiResponse } from '@nestjs/swagger';
 import { TransformInterceptor } from '../commons/interceptors/transform.interceptor';
 import { ITodoService } from '../services/todo.service.interface';
-import { CreateTodoResponseDto, CreateTodoRequestDto } from '../dto';
+import { CreateTodoResponseDto, CreateTodoRequestDto, CompleteTodoRequestParamDto } from '../dto';
 
 @ApiUseTags('todos')
 @UseGuards(AuthGuard())
@@ -36,5 +36,41 @@ export default class TodoController {
       status: newTodo.status,
       createdOn: newTodo.createdOn
     };
+  }
+
+  @Patch('/:id/complete')
+  @ApiBearerAuth()
+  @ApiImplicitParam({
+    name: 'id',
+    required: true,
+    type: Number
+  })
+  @ApiOperation({ title: 'Complete a todo' })
+  @ApiResponse({
+    status: 200,
+    description: 'Todo has been turned to complete'
+  })
+  @ApiBadRequestResponse({})
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorised'
+  })
+  @ApiForbiddenResponse({
+    description: 'Todo is not belong to authenticated user'
+  })
+  @ApiNotFoundResponse({
+    description: 'Todo id not found'
+  })
+  complete(
+    @Param()
+    params: CompleteTodoRequestParamDto,
+    @Request()
+    req: any
+  ) {
+    if (params.id < 1) {
+      return Promise.reject(new BadRequestException('Todo id is invalid'));
+    }
+    params.id = parseInt(params.id as any, 10);
+    return this.todoService.complete(params.id, req.profile.id)
+      .then(() => ({}));
   }
 }
