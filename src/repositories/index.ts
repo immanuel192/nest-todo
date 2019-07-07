@@ -18,7 +18,7 @@ export class ITodoRepository extends BaseRepository<TodoDto> {
     return {
       provide: ITodoRepository,
       inject: [PROVIDERS.DB],
-      useFactory: (db: IDatabaseInstance) => new IUserRepository(db, 'todos')
+      useFactory: (db: IDatabaseInstance) => new ITodoRepository(db, 'todos')
     };
   }
 }
