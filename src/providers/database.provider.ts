@@ -11,7 +11,6 @@ export const providerDatabase: FactoryProvider = {
     logger: ILoggerInstance
   ) => {
     const dbConfig = configProvider.get('database') as { type: string, fileName?: string };
-
     return await Promise.resolve().then(() => {
       const db = new lokijs(dbConfig.fileName || 'database.json', {
         persistenceMethod: dbConfig.type as any,

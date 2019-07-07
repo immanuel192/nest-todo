@@ -1,6 +1,6 @@
-import { Controller, Post, Body, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, UseInterceptors, Request } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiUseTags, ApiUnauthorizedResponse, ApiCreatedResponse, ApiBadRequestResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiUseTags, ApiUnauthorizedResponse, ApiCreatedResponse, ApiBadRequestResponse, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { TransformInterceptor } from '../commons/interceptors/transform.interceptor';
 import { ITodoService } from '../services/todo.service.interface';
 import { CreateTodoResponseDto, CreateTodoRequestDto } from '../dto';
@@ -14,6 +14,7 @@ export default class TodoController {
   ) { }
 
   @Post('')
+  @ApiBearerAuth()
   @UseInterceptors(TransformInterceptor)
   @ApiOperation({ title: 'Create new todo' })
   @ApiCreatedResponse({
@@ -22,11 +23,18 @@ export default class TodoController {
   })
   @ApiBadRequestResponse({})
   @ApiUnauthorizedResponse({ description: 'Unauthorised' })
-  create(
+  async create(
     @Body()
-    inp: CreateTodoRequestDto
+    inp: CreateTodoRequestDto,
+    @Request()
+    req: any
   ) {
-    console.log(inp);
-    console.log(this.todoService);
+    const newTodo = await this.todoService.create(inp, req.profile.id);
+    return {
+      id: newTodo.id,
+      title: newTodo.title,
+      status: newTodo.status,
+      createdOn: newTodo.createdOn
+    };
   }
 }

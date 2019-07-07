@@ -1,5 +1,5 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import { IsString, IsDate, IsInt } from 'class-validator';
+import { IsString, IsDate, IsInt, MinLength } from 'class-validator';
 
 // This file contains all DTO for controllers
 // @todo Later can refactor into multiple files if needed
@@ -10,6 +10,7 @@ export class CreateUserRequestDto {
     description: 'Username of new user'
   })
   @IsString()
+  @MinLength(1)
   readonly username: string;
 }
 
@@ -47,9 +48,11 @@ export class CreateUserResponseDto {
 export class CreateTodoRequestDto {
   @ApiModelProperty({
     required: true,
-    description: 'Todo title'
+    description: 'Todo title',
+    minLength: 1
   })
   @IsString()
+  @MinLength(1)
   readonly title: string;
 }
 
