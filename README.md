@@ -21,13 +21,36 @@ The app should meet the following requirements:
 We use `semantic-release` to generate release notes. This make use of [conventional commit structure](https://www.conventionalcommits.org/en/v1.0.0-beta.4/) for both the notes and release numbers.
 
 
-### Setup:
+### Setup your working environment:
 - Create Github and NPM [tokens](https://github.com/immanuel192/semantic-release-sample)
 - Export these tokens into your `~/.bash_profile` and source it:
 ```sh
 export GH_TOKEN={your github token}
 export NPM_TOKEN={your npm token} # should be optional
 ```
+- Available tasks
+```sh
+npm install
+npm run start:local # to start app
+npm run start:local:watch # to start app and watch for any changes
+npm run test # to test app
+npm run cover # to get code coverage
+```
 
-### Deploy:
+### Using docker
+- Run
+```sh
+docker-compose up -d
+```
+
+## API Documentation
+There is swagger integrated to help you easier navigate through all exposed restful api. Please follow:
+```sh
+docker-compose up -d
+open http://localhost:9001/api/
+```
+
+*Notice*: The secure token is `zendesk`
+
+### Release Production:
 - `npm run release`

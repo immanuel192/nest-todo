@@ -1,5 +1,5 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import { IsString, IsDate } from 'class-validator';
+import { IsString, IsDate, IsInt } from 'class-validator';
 
 // This file contains all DTO for controllers
 // @todo Later can refactor into multiple files if needed
@@ -18,12 +18,14 @@ export class CreateUserResponseDto {
     required: true,
     example: 1
   })
+  @IsInt()
   id: number;
 
   @ApiModelProperty({
     required: true,
     example: 'daddypig'
   })
+  @IsString()
   username: string;
 
   @ApiModelProperty({
