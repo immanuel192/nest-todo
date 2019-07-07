@@ -11,7 +11,10 @@
     "/node_modules/"
   ],
   "coveragePathIgnorePatterns": [
-    "/node_modules/"
+    "/node_modules/",
+    "app.ts",
+    "test-helper.ts",
+    "middlewares"
   ],
   "collectCoverageFrom": [
     "<rootDir>/src/**/*.ts",

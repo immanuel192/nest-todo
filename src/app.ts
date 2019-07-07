@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './modules/app.module';
 import * as _ from 'lodash';
 import { inspect } from 'util';
@@ -26,6 +27,13 @@ async function bootstrap() {
   }));
   app.use(compression({ level: 9, memLevel: 9 }));
   handleErrors();
+
+  const options = new DocumentBuilder()
+    .setTitle('nest-todo')
+    .setDescription('nest-todo api')
+    .build();
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('api', app, document);
 
   await app.listen(process.env.NODE_PORT || 9000);
 }

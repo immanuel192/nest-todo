@@ -23,12 +23,17 @@ export const providerDatabase: FactoryProvider = {
       .then(async (db) => {
         if (!db.getCollection('users')) {
           const userCollection = db.addCollection('users');
+          userCollection.on('insert', (input: any) => {
+            input.id = input.$loki;
+          });
           // seed sample user
           logger.debug('Seeding sample user zendesk123');
-          await userCollection.insert({ id: 1, username: 'zendesk123', password: Buffer.from('321ksednez').toString('base64') });
+          await userCollection.insert({ id: 1, username: 'zendesk123', createdOn: new Date() });
         }
         if (!db.getCollection('posts')) {
-          db.addCollection('posts', { indices: ['userId'] });
+          db.addCollection('posts', { indices: ['userId'] }).on('insert', (input: any) => {
+            input.id = input.$loki;
+          });
         }
         return db;
       });
