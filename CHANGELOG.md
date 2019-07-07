@@ -1,3 +1,11 @@
+# [1.2.0](https://github.com/immanuel192/nest-todo/compare/v1.1.0...v1.2.0) (2019-07-07)
+
+
+### Features
+
+* add list todo endpoint ([d324c9f](https://github.com/immanuel192/nest-todo/commit/d324c9f))
+* add remove todo endpoint ([04e23f6](https://github.com/immanuel192/nest-todo/commit/04e23f6))
+
 # [1.1.0](https://github.com/immanuel192/nest-todo/compare/v1.0.0...v1.1.0) (2019-07-07)
 
 
