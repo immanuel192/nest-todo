@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Headers, UnauthorizedException, UseInterceptors } from '@nestjs/common';
-import { CreateUserRequestDto } from '../dto';
-import { ApiUseTags } from '@nestjs/swagger';
+import { CreateUserRequestDto, CreateUserResponseDto } from '../dto';
+import { ApiUseTags, ApiUnauthorizedResponse, ApiCreatedResponse, ApiBadRequestResponse, ApiOperation } from '@nestjs/swagger';
 import { IUserService } from '../services';
 import { TransformInterceptor } from '../commons/interceptors/transform.interceptor';
 
@@ -13,6 +13,10 @@ export default class UserController {
 
   @UseInterceptors(TransformInterceptor)
   @Post('')
+  @ApiOperation({ title: 'Create user' })
+  @ApiCreatedResponse({ description: 'User has been successfully created.', type: CreateUserResponseDto })
+  @ApiBadRequestResponse({})
+  @ApiUnauthorizedResponse({ description: 'Unauthorised' })
   create(
     @Body()
     user: CreateUserRequestDto,

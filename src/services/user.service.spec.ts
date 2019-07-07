@@ -56,7 +56,8 @@ describe('/src/services/user.service.ts', () => {
       return instance.createUser({ username: expectUser })
         .then(() => {
           expect(repoUser.insertOne).toBeCalledWith({
-            username: expectUser.toLowerCase()
+            username: expectUser.toLowerCase(),
+            createdOn: expect.any(Date)
           });
         });
     });
