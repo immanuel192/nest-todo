@@ -30,7 +30,7 @@ export const providerDatabase: FactoryProvider = {
           await userCollection.insert({ id: 1, username: 'zendesk123', createdOn: new Date() });
         }
         if (!db.getCollection('todos')) {
-          db.addCollection('todos', { indices: ['userId'] }).on('insert', (input: any) => {
+          db.addCollection('todos', { indices: ['userId', 'status'] }).on('insert', (input: any) => {
             input.id = input.$loki;
           });
         }
