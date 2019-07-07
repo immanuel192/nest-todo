@@ -1,3 +1,4 @@
+export { when } from 'jest-when';
 const ISO_8601_FULL = /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d+)?(([+-]\d\d:\d\d)|Z)?$/i;
 export const expectDateISO8601Format = expect.stringMatching(ISO_8601_FULL);
 
@@ -25,4 +26,14 @@ export const NoopLogger = {
   warn(_message: any, _context?: string) { },
   debug(_message: any, _context?: string) { },
   verbose(_message: any, _context?: string) { },
+};
+
+/**
+ * Simple mock repository
+ */
+export const repoMock = () => {
+  return {
+    insert: jest.fn(),
+    findOne: jest.fn()
+  };
 };
