@@ -40,4 +40,15 @@ export class TodoService implements ITodoService {
     }
     await this.repoTodo.findAndUpdate({ id }, { status: ETodoStatus.Completed });
   }
+
+  async remove(id: number, userId: number): Promise<void> {
+    const todo = await this.repoTodo.findOne({ id });
+    if (!todo) {
+      throw new NotFoundException(`Todo ${id} is not found`);
+    }
+    if (todo.userId !== userId) {
+      throw new ForbiddenException(`Todo ${id} is not belong to you`);
+    }
+    await this.repoTodo.removeByQuery({ id });
+  }
 }

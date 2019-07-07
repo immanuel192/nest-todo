@@ -281,5 +281,78 @@ describe('/src/app.ts', () => {
           });
       });
     });
+
+    describe('Remove Todo', () => {
+      let firstTodo: TodoDto;
+
+      beforeAll(async () => {
+        firstTodo = await todoService.create({ title: randomString() }, firstUser.id);
+      });
+
+      it('when remove todo without Authorization then return HTTP 401', () => {
+        return request(app.getHttpServer())
+          .delete('/todos/1')
+          .auth(randomString(), randomString(), { type: 'basic' })
+          .set('accept', 'json')
+          .expect(401);
+      });
+
+      it('when remove todo with invalid id data type then return HTTP 400', () => {
+        return request(app.getHttpServer())
+          .delete('/todos/abc')
+          .auth(firstUser.username, firstUser.password, { type: 'basic' })
+          .set('accept', 'json')
+          .expect(400);
+      });
+
+      it('when remove todo with id less than 1 then return HTTP 400', () => {
+        return request(app.getHttpServer())
+          .delete('/todos/0')
+          .auth(firstUser.username, firstUser.password, { type: 'basic' })
+          .set('accept', 'json')
+          .expect(400)
+          .then((ret) => {
+            expect(ret.body).toMatchObject({ message: 'Todo id is invalid' });
+          });
+      });
+
+      it('when remove todo with not exist id then return HTTP 404', () => {
+        return request(app.getHttpServer())
+          .delete(`/todos/${(firstTodo.id * 10)}`)
+          .auth(firstUser.username, firstUser.password, { type: 'basic' })
+          .set('accept', 'json')
+          .expect(404)
+          .then((ret) => {
+            expect(ret.body).toMatchObject({
+              message: `Todo ${(firstTodo.id * 10)} is not found`
+            });
+          });
+      });
+
+      it('when remove existing todo which belong to other user then return HTTP 403', () => {
+        return request(app.getHttpServer())
+          .delete(`/todos/${firstTodo.id}`)
+          .auth(secondUser.username, secondUser.password, { type: 'basic' })
+          .set('accept', 'json')
+          .expect(403)
+          .then((ret) => {
+            expect(ret.body).toMatchObject({
+              message: `Todo ${firstTodo.id} is not belong to you`
+            });
+          });
+      });
+
+      it('when remove todo then return HTTP 200', () => {
+        return request(app.getHttpServer())
+          .delete(`/todos/${firstTodo.id}`)
+          .auth(firstUser.username, firstUser.password, { type: 'basic' })
+          .set('accept', 'json')
+          .expect(200)
+          .then(async () => {
+            const todo = await repoTodo.findOne({ id: firstTodo.id });
+            expect(todo).toEqual(undefined);
+          });
+      });
+    });
   });
 });

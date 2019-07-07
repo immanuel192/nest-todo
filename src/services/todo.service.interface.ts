@@ -13,4 +13,11 @@ export abstract class ITodoService {
    * Complete a todo
    */
   abstract complete(id: number, userId: number): Promise<void>;
+
+  /**
+   * Remove a todo
+   * @param id todo id
+   * @param userId user id
+   */
+  abstract remove(id: number, userId: number): Promise<void>;
 }

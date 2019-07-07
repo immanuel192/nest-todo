@@ -1,9 +1,9 @@
-import { Controller, Post, Body, UseGuards, UseInterceptors, Request, Param, Patch, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, UseInterceptors, Request, Param, Patch, BadRequestException, Delete } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiUseTags, ApiUnauthorizedResponse, ApiCreatedResponse, ApiBadRequestResponse, ApiOperation, ApiBearerAuth, ApiImplicitParam, ApiNotFoundResponse, ApiForbiddenResponse, ApiResponse } from '@nestjs/swagger';
 import { TransformInterceptor } from '../commons/interceptors/transform.interceptor';
 import { ITodoService } from '../services/todo.service.interface';
-import { CreateTodoResponseDto, CreateTodoRequestDto, CompleteTodoRequestParamDto } from '../dto';
+import { CreateTodoResponseDto, CreateTodoRequestDto, RequestTodoByIdParamDto } from '../dto';
 
 @ApiUseTags('todos')
 @UseGuards(AuthGuard())
@@ -62,7 +62,7 @@ export default class TodoController {
   })
   complete(
     @Param()
-    params: CompleteTodoRequestParamDto,
+    params: RequestTodoByIdParamDto,
     @Request()
     req: any
   ) {
@@ -71,6 +71,42 @@ export default class TodoController {
     }
     params.id = parseInt(params.id as any, 10);
     return this.todoService.complete(params.id, req.profile.id)
+      .then(() => ({}));
+  }
+
+  @Delete('/:id')
+  @ApiBearerAuth()
+  @ApiImplicitParam({
+    name: 'id',
+    required: true,
+    type: Number
+  })
+  @ApiOperation({ title: 'Remove a todo' })
+  @ApiResponse({
+    status: 200,
+    description: 'Todo has been removed'
+  })
+  @ApiBadRequestResponse({})
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorised'
+  })
+  @ApiForbiddenResponse({
+    description: 'Todo is not belong to authenticated user'
+  })
+  @ApiNotFoundResponse({
+    description: 'Todo id not found'
+  })
+  remove(
+    @Param()
+    params: RequestTodoByIdParamDto,
+    @Request()
+    req: any
+  ) {
+    if (params.id < 1) {
+      return Promise.reject(new BadRequestException('Todo id is invalid'));
+    }
+    params.id = parseInt(params.id as any, 10);
+    return this.todoService.remove(params.id, req.profile.id)
       .then(() => ({}));
   }
 }
