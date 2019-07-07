@@ -23,7 +23,7 @@ export class UserService implements IUserService {
     if (existingUser) {
       throw new BadRequestException(`User ${user.username} existed`);
     }
-    return this.repoUser.insert({
+    return this.repoUser.insertOne({
       ...user,
       username: user.username.toLowerCase()
     });

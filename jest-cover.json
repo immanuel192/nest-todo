@@ -11,7 +11,8 @@
     "/node_modules/"
   ],
   "coveragePathIgnorePatterns": [
-    "/node_modules/"
+    "/node_modules/",
+    "app.ts"
   ],
   "collectCoverageFrom": [
     "<rootDir>/src/**/*.ts",

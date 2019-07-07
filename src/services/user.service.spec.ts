@@ -55,7 +55,7 @@ describe('/src/services/user.service.ts', () => {
 
       return instance.createUser({ username: expectUser })
         .then(() => {
-          expect(repoUser.insert).toBeCalledWith({
+          expect(repoUser.insertOne).toBeCalledWith({
             username: expectUser.toLowerCase()
           });
         });

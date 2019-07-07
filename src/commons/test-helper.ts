@@ -33,7 +33,7 @@ export const NoopLogger = {
  */
 export const repoMock = () => {
   return {
-    insert: jest.fn(),
+    insertOne: jest.fn(),
     findOne: jest.fn()
   };
 };

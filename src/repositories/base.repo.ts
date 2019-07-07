@@ -14,9 +14,9 @@ export class BaseRepository<TModel extends Object = any> {
   /**
    * Insert new record
    */
-  async insert(data: Partial<TModel>): Promise<TModel> {
-    const newUser = await this.collection.insertOne(data as any);
-    return omit(newUser, ['meta', '$loki']) as any;
+  async insertOne(data: Partial<TModel>): Promise<TModel> {
+    const newData = await this.collection.insertOne(data as any);
+    return omit(newData, ['meta', '$loki']) as any;
   }
 
   async findOne(query: any): Promise<TModel> {
