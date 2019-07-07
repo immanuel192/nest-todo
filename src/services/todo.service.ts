@@ -3,7 +3,7 @@ import { ClassProvider } from '@nestjs/common/interfaces';
 import { ITodoRepository } from '../repositories';
 import { IOC_KEY } from '../commons';
 import { ITodoService } from './todo.service.interface';
-import { TodoDto, CreateTodoRequestDto, ETodoStatus } from '../dto';
+import { TodoDto, CreateTodoRequestDto, ETodoStatus, GetTodoRequestQueryDto } from '../dto';
 
 @Injectable()
 export class TodoService implements ITodoService {
@@ -50,5 +50,15 @@ export class TodoService implements ITodoService {
       throw new ForbiddenException(`Todo ${id} is not belong to you`);
     }
     await this.repoTodo.removeByQuery({ id });
+  }
+
+  find(query: GetTodoRequestQueryDto & { userId: number }): Promise<TodoDto[]> {
+    const findQuery: any = {
+      userId: query.userId
+    };
+    if (query.status === ETodoStatus.Active || query.status === ETodoStatus.Completed) {
+      findQuery.status = query.status;
+    }
+    return this.repoTodo.find(findQuery);
   }
 }

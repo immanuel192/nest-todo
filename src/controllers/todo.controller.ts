@@ -1,9 +1,9 @@
-import { Controller, Post, Body, UseGuards, UseInterceptors, Request, Param, Patch, BadRequestException, Delete } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, UseInterceptors, Request, Param, Patch, BadRequestException, Delete, Get, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiUseTags, ApiUnauthorizedResponse, ApiCreatedResponse, ApiBadRequestResponse, ApiOperation, ApiBearerAuth, ApiImplicitParam, ApiNotFoundResponse, ApiForbiddenResponse, ApiResponse } from '@nestjs/swagger';
 import { TransformInterceptor } from '../commons/interceptors/transform.interceptor';
 import { ITodoService } from '../services/todo.service.interface';
-import { CreateTodoResponseDto, CreateTodoRequestDto, RequestTodoByIdParamDto } from '../dto';
+import { CreateTodoResponseDto, CreateTodoRequestDto, RequestTodoByIdParamDto, GetTodoRequestQueryDto, ListTodoResponseDto } from '../dto';
 
 @ApiUseTags('todos')
 @UseGuards(AuthGuard())
@@ -108,5 +108,23 @@ export default class TodoController {
     params.id = parseInt(params.id as any, 10);
     return this.todoService.remove(params.id, req.profile.id)
       .then(() => ({}));
+  }
+
+  @Get('')
+  @ApiBearerAuth()
+  @UseInterceptors(TransformInterceptor)
+  @ApiOperation({ title: 'Get todos of authenticated user' })
+  @ApiResponse({ status: 200, type: ListTodoResponseDto })
+  @ApiUnauthorizedResponse({ description: 'Unauthorised' })
+  list(
+    @Query()
+    params: GetTodoRequestQueryDto,
+    @Request()
+    req: any
+  ) {
+    return this.todoService.find({
+      userId: req.profile.id,
+      ...params
+    });
   }
 }

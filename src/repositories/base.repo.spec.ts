@@ -1,3 +1,4 @@
+import { omit } from 'lodash';
 import { BaseRepository } from './base.repo';
 import { when } from '../commons/test-helper';
 
@@ -5,6 +6,7 @@ const expectCollectionName = 'myCollection';
 const mockCollection = {
   insertOne: jest.fn(),
   findOne: jest.fn(),
+  find: jest.fn(),
   findAndUpdate: jest.fn(),
   removeWhere: jest.fn()
 };
@@ -50,14 +52,37 @@ describe('/src/repositories/base.repo.ts', () => {
   describe('findOne', () => {
     it('should findOne with inp query and omit meta fields', async () => {
       const query = { a: 1, b: 2 };
-      const expectValue = { name: 'trung' };
+      const expectValue = { name: 'trung', meta: 'abc', $loki: 2 };
 
       when(mockCollection.findOne).calledWith(query).mockResolvedValue(expectValue);
 
       const res = await instance.findOne(query);
-      expect(res).toMatchObject(expectValue);
+      expect(res).toMatchObject(omit(expectValue, ['meta', '$loki']));
       expect(res).not.toHaveProperty('meta');
       expect(res).not.toHaveProperty('$loki');
+    });
+
+    it('should return undefined if can not find', async () => {
+      const query = { a: 1, b: 2 };
+
+      when(mockCollection.findOne).calledWith(query).mockResolvedValue(undefined);
+
+      const res = await instance.findOne(query);
+      expect(res).toEqual(undefined);
+    });
+  });
+
+  describe('find', () => {
+    it('should find with inp query and omit meta fields', async () => {
+      const query = { a: 1, b: 2 };
+      const expectValue = [{ name: 'trung', meta: 'abc', $loki: 2 }];
+
+      when(mockCollection.find).calledWith(query).mockResolvedValue(expectValue);
+
+      const res = await instance.find(query);
+      expect(res[0]).toMatchObject(omit(expectValue[0], ['meta', '$loki']));
+      expect(res[0]).not.toHaveProperty('meta');
+      expect(res[0]).not.toHaveProperty('$loki');
     });
   });
 
