@@ -1,4 +1,5 @@
-export * from './controllers';
+export * from './user.controller.dto';
+export * from './todo.controller.dto';
 
 export interface UserDto {
   id?: number;

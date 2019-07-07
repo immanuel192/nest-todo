@@ -37,4 +37,9 @@ export default class TodoController {
       createdOn: newTodo.createdOn
     };
   }
+
+  @Post(':id/complete')
+  complete() {
+
+  }
 }
