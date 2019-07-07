@@ -79,12 +79,12 @@ describe('/src/app.ts', () => {
           .then((ret) => expect(ret.text).toMatch(/username must be a string/));
       });
 
-      it('when creating user then got HTTP 201 with user info', () => {
+      it('when creating user then got HTTP 201 with user name in lowercase', () => {
         return request(app.getHttpServer())
           .post('/users')
           .set('X-Secure-Token', secureHeader)
           .send({
-            username: 'trung'
+            username: 'trUNg'
           })
           .set('accept', 'json')
           .expect(201)

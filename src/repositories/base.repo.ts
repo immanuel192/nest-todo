@@ -19,7 +19,7 @@ export class BaseRepository<TModel extends Object = any> {
     return omit(newUser, ['meta', '$loki']) as any;
   }
 
-  async findOne(query: any) {
+  async findOne(query: any): Promise<TModel> {
     return await this.collection.findOne(query);
   }
 }

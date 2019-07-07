@@ -23,7 +23,7 @@ export const providerDatabase: FactoryProvider = {
       .then(async (db) => {
         if (!db.getCollection('users')) {
           const userCollection = db.addCollection('users');
-          (userCollection as any).on('insert', (input: any) => {
+          userCollection.on('insert', (input: any) => {
             input.id = input.$loki;
           });
           // seed sample user
