@@ -12,3 +12,13 @@ export class IUserRepository extends BaseRepository<UserDto> {
     };
   }
 }
+
+export class ITodoRepository extends BaseRepository<UserDto> {
+  static get [IOC_KEY](): FactoryProvider {
+    return {
+      provide: ITodoRepository,
+      inject: [PROVIDERS.DB],
+      useFactory: (db: IDatabaseInstance) => new IUserRepository(db, 'todos')
+    };
+  }
+}
