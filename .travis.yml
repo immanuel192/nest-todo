@@ -12,7 +12,6 @@ git:
   depth: false
 
 cache:
-  apt: true
   bundler: true
   directories:
   - node_modules
@@ -26,6 +25,7 @@ jobs:
     name: Unit test & Integration test
     script:
     - npm run cover
+    - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
   - stage: deploy
     if: "(branch = master) OR (tag =~ ^v[0-9].*$)"
     name: Deploy
