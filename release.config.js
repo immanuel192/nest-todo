@@ -51,7 +51,7 @@ module.exports = {
           "CHANGELOG.md",
           "package.json"
         ],
-        "message": "chore(release): Release <%= nextRelease.version %> - <%= new Date().toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' }) %>\n\n<%= nextRelease.notes %>"
+        "message": "chore(release): release <%= nextRelease.version %> - <%= new Date().toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' }) %>\n\n<%= nextRelease.notes %>"
       }
     ],
     "@semantic-release/github"
